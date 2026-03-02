@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 python-telegram-bot==20.7
 aiohttp
 requests
+=======
+python-telegram-bot==20.7
+aiohttp
+requests
+
+>>>>>>> bb29f3374f6450c8d3d9e5c17c298266b3ec88d7
