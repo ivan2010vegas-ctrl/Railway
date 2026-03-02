@@ -9,17 +9,4 @@
     "deals_as_buyer": 0,
     "joined_at": 1771873597
   }
-=======
-{
-  "6358654892": {
-    "user_id": 6358654892,
-    "username": "Gusiein",
-    "full_name": "Ivan",
-    "verified": false,
-    "agreed_terms": true,
-    "deals_as_seller": 0,
-    "deals_as_buyer": 0,
-    "joined_at": 1771873597
-  }
->>>>>>> bb29f3374f6450c8d3d9e5c17c298266b3ec88d7
-}
+
