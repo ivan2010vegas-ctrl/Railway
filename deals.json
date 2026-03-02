@@ -1,0 +1,38 @@
+{
+  "deal_1771867984_1044849684_6358654892": {
+    "deal_id": "deal_1771867984_1044849684_6358654892",
+    "seller_id": 1044849684,
+    "buyer_id": 6358654892,
+    "product_name": "Посмотри",
+    "base_price": 1.0,
+    "commission": 0.05,
+    "total": 1.05,
+    "invoice_id": 0,
+    "invoice_url": "stars",
+    "status": "completed",
+    "track_number": "ТРЕК_НОМЕР",
+    "created_at": 1771867984,
+    "paid_at": 1771867984,
+    "shipped_at": 1771868020,
+    "completed_at": 1771868031,
+    "payment_method": "stars",
+    "stars_amount": 15
+  },
+  "deal_1771869725_6358654892_6358654892": {
+    "deal_id": "deal_1771869725_6358654892_6358654892",
+    "seller_id": 6358654892,
+    "buyer_id": 6358654892,
+    "product_name": "роро",
+    "base_price": 1356.0,
+    "commission": 67.8,
+    "total": 1423.8,
+    "invoice_id": 45183457,
+    "invoice_url": "https://t.me/CryptoBot?start=IVVc7cGsQvSQ",
+    "status": "waiting_payment",
+    "track_number": null,
+    "created_at": 1771869725,
+    "paid_at": null,
+    "shipped_at": null,
+    "completed_at": null
+  }
+}
