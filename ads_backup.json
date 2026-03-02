@@ -1,0 +1,36 @@
+{
+    "6358654892": {
+        "name": "ь",
+        "price": 54,
+        "country": "🇺🇿 Узбекистан",
+        "delivery": "✅ Да, возможна",
+        "media": [
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkBAAICMWmcpxGCmYRe9_3Gx1Nhb0MiZiL-AAKUGGsbYE3gSPqN_DrKzSeuAQADAgADeQADOgQ"
+            },
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkBAAICQ2mcqDjShUkixtLbIK-KwU1GZZf1AAKbGGsbYE3gSEqObLMCKouZAQADAgADeQADOgQ"
+            },
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkBAAICRGmcqDiOtekRV5PnJ56XNFsfKYELAAKcGGsbYE3gSAbhNc_Mgn5wAQADAgADeQADOgQ"
+            },
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkBAAICRWmcqDjfl5T4PPvx1jNGVelUWbFIAAKdGGsbYE3gSFUeHkst1IosAQADAgADeQADOgQ"
+            },
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkBAAICRmmcqDh3JjaZ5Ap4P8eKXGHLbWn7AAKeGGsbYE3gSKK97saoS5cJAQADAgADeAADOgQ"
+            }
+        ]
+    },
+    "1044849684": {
+        "name": "Посмотри",
+        "price": 1,
+        "country": "🇧🇾 Беларусь",
+        "delivery": "❌ Нет, самовывоз"
+    }
+}
