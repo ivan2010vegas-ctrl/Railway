@@ -35,26 +35,34 @@ from config import TOKEN, CHANNEL_PUBLIC, ADMIN_ID
 from send_to_admin import send_ad_to_admin
 import database as db
 
-import sys
+# В начале файла bot.py, после всех импортов, добавьте:
 
-def debug_sql_queries():
-    """Перехватывает и выводит все SQL запросы."""
-    import sqlite3
+import sqlite3
+from functools import wraps
+
+def enable_sql_debug():
+    """Включает отладку SQL запросов безопасным способом"""
     original_execute = sqlite3.Cursor.execute
     
-    def wrapped_execute(self, sql, parameters=None):
-        print(f"🔍 SQL: {sql}")
-        if parameters:
-            print(f"📦 PARAMS: {parameters}")
+    @wraps(original_execute)
+    def debug_execute(self, sql, parameters=None):
+        # Проверяем на ORDER без BY
         if "ORDER" in sql and "ORDER BY" not in sql:
-            print(f"❌ ПРОБЛЕМА: в запросе есть ORDER без BY!")
+            print(f"\n❌ НАЙДЕНА ОШИБКА: ORDER без BY!")
+            print(f"📝 Запрос: {sql}")
+            if parameters:
+                print(f"📦 Параметры: {parameters}")
+            print("🔍 Стек вызовов:")
+            import traceback
+            traceback.print_stack(limit=5)
         return original_execute(self, sql, parameters or [])
     
-    sqlite3.Cursor.execute = wrapped_execute
-    print("🐛 Отладка SQL запросов включена")
+    # Безопасно заменяем метод
+    sqlite3.Cursor.execute = debug_execute
+    print("✅ Отладка SQL включена")
 
-# Раскомментируйте следующую строку для включения отладки:
-# debug_sql_queries()
+# РАСКОММЕНТИРУЙТЕ следующую строку для включения отладки:
+enable_sql_debug()
 
 db.init_db()
 
@@ -2050,5 +2058,6 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     
     main()
+
 
 
