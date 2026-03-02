@@ -1922,9 +1922,26 @@ async def stats_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
+# ── MAIN ──────────────────────────────────────────────────────────────────────
 def main():
+    # Включаем отладку SQL
+    import sqlite3
+    original_execute = sqlite3.Cursor.execute
+    
+    def debug_execute(self, sql, parameters=None):
+        if "ORDER" in sql and "ORDER BY" not in sql:
+            print(f"❌ КРИТИЧЕСКАЯ ОШИБКА: ORDER без BY в запросе!")
+            print(f"📝 Запрос: {sql}")
+            if parameters:
+                print(f"📦 Параметры: {parameters}")
+        return original_execute(self, sql, parameters or [])
+    
+    sqlite3.Cursor.execute = debug_execute
+    print("🔍 Отладка SQL включена")
+    
     app = ApplicationBuilder().token(TOKEN).build()
 
+    # Создаем ConversationHandler'ы
     review_conv = ConversationHandler(
         entry_points=[CommandHandler("review", leave_review_start)],
         states={
@@ -1985,40 +2002,45 @@ def main():
         fallbacks=[CommandHandler("cancel", cancel_ad), CommandHandler("start", start), MessageHandler(filters.Regex("^❌ Отменить объявление$"), cancel_ad)],
     )
 
-    # СНАЧАЛА обработчик кнопок (САМЫЙ ВАЖНЫЙ!)
+    # ========== ВАЖНО: ПРАВИЛЬНЫЙ ПОРЯДОК ОБРАБОТЧИКОВ ==========
+    
+    # 1. СНАЧАЛА обработчик кнопок (САМЫЙ ВЫСОКИЙ ПРИОРИТЕТ)
     app.add_handler(CallbackQueryHandler(button_handler))
-
-    # ПОТОМ все ConversationHandler
+    
+    # 2. ПОТОМ все ConversationHandler
     app.add_handler(review_conv)
     app.add_handler(verify_conv)
     app.add_handler(broadcast_conv)
     app.add_handler(ad_conv)
-
-    # ПОТОМ все команды
-    app.add_handler(CommandHandler("start",       start))
-    app.add_handler(CommandHandler("new",         new_ad))
-    app.add_handler(CommandHandler("search",      search_cmd))
-    app.add_handler(CommandHandler("review",      leave_review_start))
-    app.add_handler(CommandHandler("verify",      verify_cmd))
-    app.add_handler(CommandHandler("top",         top_sellers_cmd))
-    app.add_handler(CommandHandler("freeboost",   free_boost_cmd))
+    
+    # 3. ПОТОМ все команды
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("new", new_ad))
+    app.add_handler(CommandHandler("search", search_cmd))
+    app.add_handler(CommandHandler("review", leave_review_start))
+    app.add_handler(CommandHandler("verify", verify_cmd))
+    app.add_handler(CommandHandler("top", top_sellers_cmd))
+    app.add_handler(CommandHandler("freeboost", free_boost_cmd))
     app.add_handler(CommandHandler("rejectverify", reject_verify_cmd))
-    app.add_handler(CommandHandler("track",       track_cmd))
-    app.add_handler(CommandHandler("favorites",   favorites_cmd))
-    app.add_handler(CommandHandler("profile",     profile_cmd))
-    app.add_handler(CommandHandler("myads",       my_ads_cmd))
-    app.add_handler(CommandHandler("referrals",   referrals_cmd))
-    app.add_handler(CommandHandler("boost",       boost_menu))
+    app.add_handler(CommandHandler("track", track_cmd))
+    app.add_handler(CommandHandler("favorites", favorites_cmd))
+    app.add_handler(CommandHandler("profile", profile_cmd))
+    app.add_handler(CommandHandler("myads", my_ads_cmd))
+    app.add_handler(CommandHandler("referrals", referrals_cmd))
+    app.add_handler(CommandHandler("boost", boost_menu))
     app.add_handler(CommandHandler("setverified", set_verified_cmd))
-    app.add_handler(CommandHandler("deload",      deload_cmd))
-    app.add_handler(CommandHandler("stats",       stats_cmd))
-
-    # ПОТОМ обработчики платежей и сообщений
+    app.add_handler(CommandHandler("deload", deload_cmd))
+    app.add_handler(CommandHandler("stats", stats_cmd))
+    
+    # 4. ПОТОМ обработчики платежей
     app.add_handler(PreCheckoutQueryHandler(pre_checkout))
     app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment))
+    
+    # 5. ПОТОМ текстовые сообщения (самый низкий приоритет)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
 
     print("🚀 Бот TRECCC v9 (BOOST + Stars + ЕАЭС) запущен...")
+    print("🔍 Отладка SQL активна - ищем ORDER без BY")
     app.run_polling(stop_signals=None)
 
 
@@ -2026,7 +2048,7 @@ if __name__ == "__main__":
     import asyncio
     if sys.platform == "win32":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
+    
     main()
 
 
