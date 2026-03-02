@@ -114,25 +114,56 @@ def init_db():
 
 
 def _migrate():
-    """Добавляет новые колонки в существующие таблицы."""
-    migrations = [
-        ("users", "free_ads_left", "INTEGER DEFAULT 1"),
-        ("users", "referral_count", "INTEGER DEFAULT 0"),
-        ("ads",   "price_usd",      "REAL DEFAULT 0"),
-        ("ads",   "status",         "TEXT DEFAULT 'pending'"),
-        ("ads",   "views",          "INTEGER DEFAULT 0"),
-    ]
-    
+    """Добавляет новые колонки в существующие таблицы, если их нет."""
     with get_conn() as conn:
         c = conn.cursor()
-        for table, col, col_type in migrations:
+        
+        # Проверяем существующие колонки в таблице users
+        c.execute("PRAGMA table_info(users)")
+        existing_columns_users = [col[1] for col in c.fetchall()]
+        
+        # Добавляем колонки в users, если их нет
+        if 'free_ads_left' not in existing_columns_users:
             try:
-                execute_safe(c, f"ALTER TABLE {table} ADD COLUMN {col} {col_type}")
-                conn.commit()
-                print(f"✅ Добавлена колонка {col} в таблицу {table}")
+                c.execute("ALTER TABLE users ADD COLUMN free_ads_left INTEGER DEFAULT 1")
+                print("✅ Добавлена колонка free_ads_left в users")
             except Exception as e:
-                # Колонка уже существует - это нормально
-                pass
+                print(f"ℹ️ {e}")
+        
+        if 'referral_count' not in existing_columns_users:
+            try:
+                c.execute("ALTER TABLE users ADD COLUMN referral_count INTEGER DEFAULT 0")
+                print("✅ Добавлена колонка referral_count в users")
+            except Exception as e:
+                print(f"ℹ️ {e}")
+        
+        # Проверяем существующие колонки в таблице ads
+        c.execute("PRAGMA table_info(ads)")
+        existing_columns_ads = [col[1] for col in c.fetchall()]
+        
+        # Добавляем колонки в ads, если их нет
+        if 'price_usd' not in existing_columns_ads:
+            try:
+                c.execute("ALTER TABLE ads ADD COLUMN price_usd REAL DEFAULT 0")
+                print("✅ Добавлена колонка price_usd в ads")
+            except Exception as e:
+                print(f"ℹ️ {e}")
+        
+        if 'status' not in existing_columns_ads:
+            try:
+                c.execute("ALTER TABLE ads ADD COLUMN status TEXT DEFAULT 'pending'")
+                print("✅ Добавлена колонка status в ads")
+            except Exception as e:
+                print(f"ℹ️ {e}")
+        
+        if 'views' not in existing_columns_ads:
+            try:
+                c.execute("ALTER TABLE ads ADD COLUMN views INTEGER DEFAULT 0")
+                print("✅ Добавлена колонка views в ads")
+            except Exception as e:
+                print(f"ℹ️ {e}")
+        
+        conn.commit()
 
 
 # ── Пользователи ──────────────────────────────────────────────────────────────
@@ -645,3 +676,4 @@ def cleanup_old_pending_ads(days: int = 7):
         conn.commit()
         print(f"🧹 Удалено {deleted} старых объявлений")
         return deleted
+
