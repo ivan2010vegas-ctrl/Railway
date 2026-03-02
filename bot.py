@@ -35,6 +35,27 @@ from config import TOKEN, CHANNEL_PUBLIC, ADMIN_ID
 from send_to_admin import send_ad_to_admin
 import database as db
 
+import sys
+
+def debug_sql_queries():
+    """Перехватывает и выводит все SQL запросы."""
+    import sqlite3
+    original_execute = sqlite3.Cursor.execute
+    
+    def wrapped_execute(self, sql, parameters=None):
+        print(f"🔍 SQL: {sql}")
+        if parameters:
+            print(f"📦 PARAMS: {parameters}")
+        if "ORDER" in sql and "ORDER BY" not in sql:
+            print(f"❌ ПРОБЛЕМА: в запросе есть ORDER без BY!")
+        return original_execute(self, sql, parameters or [])
+    
+    sqlite3.Cursor.execute = wrapped_execute
+    print("🐛 Отладка SQL запросов включена")
+
+# Раскомментируйте следующую строку для включения отладки:
+# debug_sql_queries()
+
 db.init_db()
 
 # ── ЭТАПЫ ────────────────────────────────────────────────────────────────────
@@ -2007,4 +2028,5 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     main()
+
 
