@@ -1945,37 +1945,38 @@ def main():
     )
 
     # СНАЧАЛА обработчик кнопок (САМЫЙ ВАЖНЫЙ!)
-app.add_handler(CallbackQueryHandler(button_handler))
+    app.add_handler(CallbackQueryHandler(button_handler))
 
-# ПОТОМ все ConversationHandler
-app.add_handler(review_conv)
-app.add_handler(verify_conv)
-app.add_handler(broadcast_conv)
-app.add_handler(ad_conv)
+    # ПОТОМ все ConversationHandler
+    app.add_handler(review_conv)
+    app.add_handler(verify_conv)
+    app.add_handler(broadcast_conv)
+    app.add_handler(ad_conv)
 
-# ПОТОМ все команды
-app.add_handler(CommandHandler("start",       start))
-app.add_handler(CommandHandler("new",         new_ad))
-app.add_handler(CommandHandler("search",      search_cmd))
-app.add_handler(CommandHandler("review",      leave_review_start))
-app.add_handler(CommandHandler("verify",      verify_cmd))
-app.add_handler(CommandHandler("top",         top_sellers_cmd))
-app.add_handler(CommandHandler("freeboost",   free_boost_cmd))
-app.add_handler(CommandHandler("rejectverify", reject_verify_cmd))
-app.add_handler(CommandHandler("track",       track_cmd))
-app.add_handler(CommandHandler("favorites",   favorites_cmd))
-app.add_handler(CommandHandler("profile",     profile_cmd))
-app.add_handler(CommandHandler("myads",       my_ads_cmd))
-app.add_handler(CommandHandler("referrals",   referrals_cmd))
-app.add_handler(CommandHandler("boost",       boost_menu))
-app.add_handler(CommandHandler("setverified", set_verified_cmd))
-app.add_handler(CommandHandler("deload",      deload_cmd))
-app.add_handler(CommandHandler("stats",       stats_cmd))
+    # ПОТОМ все команды
+    app.add_handler(CommandHandler("start",       start))
+    app.add_handler(CommandHandler("new",         new_ad))
+    app.add_handler(CommandHandler("search",      search_cmd))
+    app.add_handler(CommandHandler("review",      leave_review_start))
+    app.add_handler(CommandHandler("verify",      verify_cmd))
+    app.add_handler(CommandHandler("top",         top_sellers_cmd))
+    app.add_handler(CommandHandler("freeboost",   free_boost_cmd))
+    app.add_handler(CommandHandler("rejectverify", reject_verify_cmd))
+    app.add_handler(CommandHandler("track",       track_cmd))
+    app.add_handler(CommandHandler("favorites",   favorites_cmd))
+    app.add_handler(CommandHandler("profile",     profile_cmd))
+    app.add_handler(CommandHandler("myads",       my_ads_cmd))
+    app.add_handler(CommandHandler("referrals",   referrals_cmd))
+    app.add_handler(CommandHandler("boost",       boost_menu))
+    app.add_handler(CommandHandler("setverified", set_verified_cmd))
+    app.add_handler(CommandHandler("deload",      deload_cmd))
+    app.add_handler(CommandHandler("stats",       stats_cmd))
 
-# ПОТОМ обработчики платежей и сообщений
-app.add_handler(PreCheckoutQueryHandler(pre_checkout))
-app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
+    # ПОТОМ обработчики платежей и сообщений
+    app.add_handler(PreCheckoutQueryHandler(pre_checkout))
+    app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
+
     print("🚀 Бот TRECCC v9 (BOOST + Stars + ЕАЭС) запущен...")
     app.run_polling(stop_signals=None)
 
