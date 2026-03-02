@@ -1682,23 +1682,43 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_text(query.message.text + f"\n\nОшибка: {e}")
         return
 
-    # Отклонение (ADMIN)
+        # Отклонение (ADMIN) - ИСПРАВЛЕННАЯ ВЕРСИЯ
     if data.startswith("rej_"):
-        parts = data[4:].split("_")
-        uid = int(parts[0])
-        reason_code = parts[1] if len(parts) > 1 else "common"
-        reasons = {"spam": "спам", "photo": "некачественные фото",
-                   "price": "некорректная цена", "common": "нарушение правил"}
-        db.delete_ad(uid)
         try:
-            await context.bot.send_message(
-                uid,
-                f"❌ Объявление отклонено.\n"
-                f"Причина: {reasons.get(reason_code, 'нарушение правил')}\n\n"
-                "Исправьте и попробуйте: /new"
+            # Правильно разбираем данные: rej_USERID_REASON
+            parts = data.split("_")
+            uid = int(parts[1])  # ID пользователя (второй элемент)
+            reason_code = parts[2] if len(parts) > 2 else "common"  # причина (третий элемент)
+            
+            reasons = {
+                "spam": "спам",
+                "photo": "некачественные фото", 
+                "price": "некорректная цена",
+                "common": "нарушение правил"
+            }
+            reason_text = reasons.get(reason_code, "нарушение правил")
+            
+            # Удаляем объявление из базы
+            db.delete_ad(uid)
+            
+            # Отправляем уведомление продавцу
+            try:
+                await context.bot.send_message(
+                    uid,
+                    f"❌ Ваше объявление отклонено.\n"
+                    f"📋 Причина: {reason_text}\n\n"
+                    "Исправьте замечания и попробуйте снова: /new"
+                )
+            except Exception as e:
+                print(f"Ошибка отправки уведомления: {e}")
+            
+            # Обновляем сообщение в группе модерации
+            await query.edit_message_text(
+                query.message.text + f"\n\n🚫 ОТКЛОНЕНО\nПричина: {reason_text}"
             )
-            await query.edit_message_text(query.message.text + "\n\n🚫 ОТКЛОНЕНО")
+            
         except Exception as e:
+            print(f"Ошибка в обработке отклонения: {e}")
             await query.edit_message_text(f"Ошибка: {e}")
         return
 
@@ -1987,3 +2007,4 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     main()
+
