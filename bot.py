@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 TRECCC — маркетплейс объявлений ЕАЭС.
 - Публикация: 1 бесплатно, далее 10 Stars
@@ -1982,6 +1981,3 @@ if __name__ == "__main__":
     if sys.platform == "win32":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     main()
-
-
->>>>>>> bb29f3374f6450c8d3d9e5c17c298266b3ec88d7
